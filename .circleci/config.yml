@@ -14,30 +14,30 @@ workflows:
           filters:
             tags:
               ignore: /v[0-9]+\.[0-9]+\.[0-9]+/
-  tagged:
-    jobs:
-      - build_go:
-          filters:
-            tags:
-              only: /v[0-9]+\.[0-9]+\.[0-9]+/
-            branches:
-              ignore: /.*/
-      - publish_gcr:
-          requires:
-            - build_go
-          filters:
-            tags:
-              only: /v[0-9]+\.[0-9]+\.[0-9]+/
-            branches:
-              ignore: /.*/
-      - deploy_gke:
-          requires:
-            - publish_gcr
-          filters:
-            tags:
-              only: /v[0-9]+\.[0-9]+\.[0-9]+/
-            branches:
-              ignore: /.*/
+  # tagged:
+  #   jobs:
+  #     - build_go:
+  #         filters:
+  #           tags:
+  #             only: /v[0-9]+\.[0-9]+\.[0-9]+/
+  #           branches:
+  #             ignore: /.*/
+  #     - publish_gcr:
+  #         requires:
+  #           - build_go
+  #         filters:
+  #           tags:
+  #             only: /v[0-9]+\.[0-9]+\.[0-9]+/
+  #           branches:
+  #             ignore: /.*/
+  #     - deploy_gke:
+  #         requires:
+  #           - publish_gcr
+  #         filters:
+  #           tags:
+  #             only: /v[0-9]+\.[0-9]+\.[0-9]+/
+  #           branches:
+  #             ignore: /.*/
 
 
 ###############################################################################
