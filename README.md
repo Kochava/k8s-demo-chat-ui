@@ -1,4 +1,4 @@
-# vue-cli-demo
+# k8s-demo-chat-ui
 
 ## Project setup
 ```
