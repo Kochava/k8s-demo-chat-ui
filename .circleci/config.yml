@@ -14,22 +14,22 @@ workflows:
           filters:
             tags:
               ignore: /v[0-9]+\.[0-9]+\.[0-9]+/
-  # tagged:
-  #   jobs:
-  #     - build_go:
-  #         filters:
-  #           tags:
-  #             only: /v[0-9]+\.[0-9]+\.[0-9]+/
-  #           branches:
-  #             ignore: /.*/
-  #     - publish_gcr:
-  #         requires:
-  #           - build_go
-  #         filters:
-  #           tags:
-  #             only: /v[0-9]+\.[0-9]+\.[0-9]+/
-  #           branches:
-  #             ignore: /.*/
+  tagged:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /v[0-9]+\.[0-9]+\.[0-9]+/
+            branches:
+              ignore: /.*/
+      - publish_gcr:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /v[0-9]+\.[0-9]+\.[0-9]+/
+            branches:
+              ignore: /.*/
   #     - deploy_gke:
   #         requires:
   #           - publish_gcr
@@ -56,33 +56,34 @@ jobs:
       - run: npm run lint
   
   # Build binaries
-  # build_go:
-  #   docker:
-  #     - image: circleci/golang:1.12
-  #   working_directory: /go/src/github.com/Kochava/k8s-demo-chat
-  #   steps:
-  #     - checkout
-  #     - attach_workspace:
-  #         at: /go/src/github.com/Kochava/k8s-demo-chat
-  #     - run: make update servers
-  #     - persist_to_workspace:
-  #         root: .
-  #         paths:
-  #           - bin
-  #           - docker
-  #           - contrib
+  build:
+    docker:
+      - image: circleci/node:9.11.2
+    working_directory: ~/k8s-demo-chat-ui
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/k8s-demo-chat-ui
+      - run: npm install
+      - run: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist
+            - docker
   
-  # # Build and publish frontend container
-  # publish_gcr:
-  #   machine: true
-  #   working_directory: /tmp/workspace
-  #   steps:
-  #     - attach_workspace:
-  #         at: /tmp/workspace
-  #     - gcr_auth
-  #     - gcr_build_and_publish:
-  #         dockerfile: docker/chat-server/Dockerfile
-  #         image-name: k8sdemo-chat-server
+  # Build and publish frontend container
+  publish_gcr:
+    machine: true
+    working_directory: /tmp/workspace
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - gcr_auth
+      - gcr_build_and_publish:
+          dockerfile: docker/chat-ui/Dockerfile
+          image-name: k8sdemo-chat-ui
+
   # deploy_gke:
   #   docker:
   #     - image: circleci/buildpack-deps:xenial
@@ -148,7 +149,7 @@ commands:
             docker build -t gcr.io/$<<parameters.google-project-id>>/<<parameters.image-name>>:$<<parameters.tag>> -f <<parameters.dockerfile>> .
             docker tag gcr.io/$<<parameters.google-project-id>>/<<parameters.image-name>>:$<<parameters.tag>> gcr.io/$<<parameters.google-project-id>>/<<parameters.image-name>>:latest
       - run:
-          name: Publish <<parameters.image-name>>:$<<parameters.tag>> docker image
+          name: Publish <<parameters.image-name>> docker image
           command: |
             docker push gcr.io/$<<parameters.google-project-id>>/<<parameters.image-name>>:$<<parameters.tag>>
             docker push gcr.io/$<<parameters.google-project-id>>/<<parameters.image-name>>:latest
