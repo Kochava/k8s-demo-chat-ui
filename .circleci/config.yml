@@ -51,8 +51,6 @@ jobs:
     working_directory: ~/k8s-demo-chat-ui
     steps:
       - checkout
-      - attach_workspace:
-          at: /go/src/github.com/Kochava/k8s-demo-chat
       - run: npm run build
       - run: npm run lint
   
