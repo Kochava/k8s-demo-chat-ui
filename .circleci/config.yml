@@ -23,6 +23,7 @@ workflows:
             branches:
               ignore: /.*/
       - publish_gcr:
+          context: kochava-testing
           requires:
             - build
           filters:
@@ -31,6 +32,7 @@ workflows:
             branches:
               ignore: /.*/
   #     - deploy_gke:
+  #         context: kochava-testing
   #         requires:
   #           - publish_gcr
   #         filters:
@@ -57,7 +59,6 @@ jobs:
   
   # Build binaries
   build:
-    context: kochava-testing
     docker:
       - image: circleci/node:9.11.2
     working_directory: ~/k8s-demo-chat-ui
