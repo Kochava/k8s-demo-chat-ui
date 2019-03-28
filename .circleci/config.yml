@@ -57,6 +57,7 @@ jobs:
   
   # Build binaries
   build:
+    context: kochava-testing
     docker:
       - image: circleci/node:9.11.2
     working_directory: ~/k8s-demo-chat-ui
