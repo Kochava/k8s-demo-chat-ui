@@ -51,6 +51,7 @@ jobs:
     working_directory: ~/k8s-demo-chat-ui
     steps:
       - checkout
+      - run: npm install
       - run: npm run build
       - run: npm run lint
   
