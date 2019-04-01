@@ -1,4 +1,8 @@
-# k8s-demo-chat-ui
+# Demo Chat Client
+
+[![CircleCI](https://circleci.com/gh/Kochava/k8s-demo-chat-ui.svg?style=svg)](https://circleci.com/gh/Kochava/k8s-demo-chat-ui)
+
+A small and simple chat client for use in our kubernetes presentations.
 
 ## Project setup
 ```
